@@ -1,4 +1,6 @@
 .idea
 .vscode
-videos/
+.videos
 */.DS_Store
+*.mp3
+videos/
