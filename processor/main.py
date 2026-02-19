@@ -17,7 +17,7 @@ def main():
     def callback(ch, method, properties, body):           
         text = str(body.decode())
 
-        tts(text, Voice.US_MALE_1, output_file_path=f"../output.mp3")
+        tts(text, Voice.US_MALE_1, output_file_path=f"../output.mp4")
 
         print(f" [x] Generated Video: {text}")
         
