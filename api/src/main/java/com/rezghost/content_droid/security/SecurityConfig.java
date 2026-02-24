@@ -1,4 +1,4 @@
-package com.rezghost.content_droid.config;
+package com.rezghost.content_droid.security;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ public class SecurityConfig {
                 .headers(headers -> headers
                         .contentSecurityPolicy(csp -> csp
                                 .policyDirectives(
-                                        "default-src 'self' http://localhost:3000; script-src 'self' http://localhost:3000;")));
+                                        "default-src 'self'; script-src 'self';")));
         return http.build();
     }
 

@@ -5,6 +5,7 @@ import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 import { useState } from "react";
 import { GenerationService } from "@/lib/services/generation-service";
+import { redirect } from "next/dist/client/components/navigation";
 
 export default function PromptContainer() {
   const MAX_CHARACTERS = 250;
@@ -31,7 +32,7 @@ export default function PromptContainer() {
     };
 
     const data = await generationService.generateVideoAsync(formValues.prompt);
-    console.log(data);
+    redirect(`/downloads/${data}`);
   };
 
   const reachedCharacterLimit = characterCount >= MAX_CHARACTERS;

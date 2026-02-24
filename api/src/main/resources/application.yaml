@@ -1,3 +1,18 @@
 spring:
   application:
     name: content-droid
+  datasource:
+    url: jdbc:postgresql://localhost:5432/content-droid
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+app:
+  rabbitmq:
+    host: localhost
+    queue-name: videos

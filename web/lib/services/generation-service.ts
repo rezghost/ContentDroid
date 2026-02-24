@@ -17,7 +17,18 @@ export class GenerationService {
             throw new Error(`Generation failed: ${response.statusText}`);
         }
 
-        const data = await response.json();
+        const data = await response.text();
+        return data;
+    }
+
+    async getDownloadStatusAsync(id: string): Promise<string> {
+        const response = await fetch(`${this.config.generationServiceUrl}/status/${encodeURIComponent(id)}`, {});
+
+        if (!response.ok) {
+            throw new Error(`Status fetch failed: ${response.statusText}`);
+        }
+
+        const data = await response.text();
         return data;
     }
 }
