@@ -31,4 +31,15 @@ export class GenerationService {
         const data = await response.text();
         return data;
     }
+
+    async getVideoUriAsync(id: string): Promise<string> {
+        const response = await fetch(`${this.config.generationServiceUrl}/video/${encodeURIComponent(id)}`, {});
+
+        if (!response.ok) {
+            throw new Error(`Video URI fetch failed: ${response.statusText}`);
+        }
+
+        const data = await response.text();
+        return data;
+    }
 }

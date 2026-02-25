@@ -88,8 +88,11 @@ services:
       - RABBITMQ_HOST=rabbitmq
       - RABBITMQ_QUEUE_NAME=videos
       - VIDEO_OUTPUT_DIR=/app/videos
+      - GCS_BUCKET_NAME=${GCS_BUCKET_NAME:-ctdroid_video_bucket}
+      - GOOGLE_APPLICATION_CREDENTIALS=/secrets/gcp-sa.json
     volumes:
       - ./processor/videos:/app/videos
+      - ./secrets/gcp-sa.json:/secrets/gcp-sa.json:ro
     depends_on:
       postgres:
         condition: service_healthy

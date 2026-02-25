@@ -1,6 +1,6 @@
 .idea
 .vscode
-.videos
-*.DS_Store
+.DS_Store
 *.mp3
 *.mp4
+/secrets

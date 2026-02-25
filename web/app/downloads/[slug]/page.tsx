@@ -10,7 +10,7 @@ export default function Page({
   const { slug } = use(params);
 
   return (
-    <div>
+    <div className="flex h-full flex-col items-center justify-center rounded-md">
       <DownloadContainer videoId={slug} />
     </div>
   );

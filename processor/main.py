@@ -5,6 +5,7 @@ import json
 import time
 import pika
 import psycopg
+from google.cloud import storage
 from text2speech import tts
 from text2speech import Voice
 
@@ -65,12 +66,24 @@ def mark_failed(video_id: str, error_message: str):
                 (error_message[:2000], video_id),
             )
 
+def upload_to_bucket(id, file_path: str) -> str:
+    bucket_name = os.getenv("GCS_BUCKET_NAME", "ctdroid_video_bucket")
+    if not bucket_name:
+        raise ValueError("GCS_BUCKET_NAME environment variable is not set")
+
+    client = storage.Client()
+    object_key = f"videos/{id}.mp4"
+    bucket = client.bucket(bucket_name)
+    blob = bucket.blob(object_key)
+    blob.upload_from_filename(file_path, content_type="video/mp4")
+    public_base_url = os.getenv("GCS_PUBLIC_BASE_URL", "https://storage.googleapis.com").rstrip("/")
+    return f"{public_base_url}/{bucket_name}/{object_key}"
+
 
 def main():
     queue_name = os.getenv("RABBITMQ_QUEUE_NAME", "videos")
     rabbit_host = os.getenv("RABBITMQ_HOST", "localhost")
-    output_dir = os.getenv("VIDEO_OUTPUT_DIR", "/app/videos")
-    download_base_url = os.getenv("DOWNLOAD_BASE_URL", "").rstrip("/")
+    output_dir = os.getenv("VIDEO_OUTPUT_DIR", "./videos")
 
     os.makedirs(output_dir, exist_ok=True)
 
@@ -99,15 +112,14 @@ def main():
             output_path = os.path.join(output_dir, f"{id}.mp4")
             tts(text, Voice.US_MALE_1, output_file_path=output_path)
 
-            if download_base_url:
-                download_location = f"{download_base_url}/{id}.mp4"
-            else:
-                download_location = output_path
+            url = upload_to_bucket(id, output_path)
 
-            mark_complete(id, download_location)
+            mark_complete(id, url)
 
             print(f" [x] Generated Video: {id}")
             ch.basic_ack(delivery_tag=method.delivery_tag)
+
+            os.remove(output_path)
         except Exception as exc:
             try:
                 mark_failed(id, str(exc))

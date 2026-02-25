@@ -81,4 +81,8 @@ public class VideoEntity {
     public VideoStatus getStatus() {
         return status;
     }
+
+    public String getStorageKey() {
+        return storageKey;
+    }
 }

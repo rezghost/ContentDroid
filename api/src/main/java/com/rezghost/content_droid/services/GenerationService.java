@@ -14,6 +14,7 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.google.gson.Gson;
 import com.rezghost.content_droid.models.VideoEntity;
+import com.rezghost.content_droid.models.VideoStatus;
 import com.rezghost.content_droid.repository.VideosRepository;
 
 import jakarta.annotation.PostConstruct;
@@ -87,7 +88,13 @@ public class GenerationService implements IGenerationService {
      * {@inheritDoc}
      */
     public String getGeneratedVideoUri(String videoId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getGeneratedVideoUri'");
+        UUID id = UUID.fromString(videoId);
+        VideoEntity video = videosRepository.findById(id).orElseThrow();
+
+        if (video.getStatus() != VideoStatus.COMPLETE) {
+            throw new IllegalStateException("Video generation is not completed yet.");
+        }
+
+        return video.getStorageKey();
     }
 }
