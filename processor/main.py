@@ -2,6 +2,7 @@
 import os
 import sys
 import json
+import time
 import pika
 import psycopg
 from text2speech import tts
@@ -14,7 +15,7 @@ def get_db_connection():
         port=os.getenv("POSTGRES_PORT", "5432"),
         dbname=os.getenv("POSTGRES_DB", "content-droid"),
         user=os.getenv("POSTGRES_USER", "postgres"),
-        password=os.getenv("POSTGRES_PASSWORD", "postgresgit log --oneline"),
+        password=os.getenv("POSTGRES_PASSWORD", "postgres"),
     )
 
 
@@ -68,10 +69,21 @@ def mark_failed(video_id: str, error_message: str):
 def main():
     queue_name = os.getenv("RABBITMQ_QUEUE_NAME", "videos")
     rabbit_host = os.getenv("RABBITMQ_HOST", "localhost")
-    output_dir = os.getenv("VIDEO_OUTPUT_DIR", "..")
+    output_dir = os.getenv("VIDEO_OUTPUT_DIR", "/app/videos")
     download_base_url = os.getenv("DOWNLOAD_BASE_URL", "").rstrip("/")
 
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbit_host))
+    os.makedirs(output_dir, exist_ok=True)
+
+    while True:
+        try:
+            connection = pika.BlockingConnection(
+                pika.ConnectionParameters(host=rabbit_host)
+            )
+            break
+        except Exception as exc:
+            print(f" [!] RabbitMQ unavailable ({exc}), retrying in 3s...")
+            time.sleep(3)
+
     channel = connection.channel()
 
     channel.queue_declare(queue=queue_name, durable=True)
@@ -97,7 +109,10 @@ def main():
             print(f" [x] Generated Video: {id}")
             ch.basic_ack(delivery_tag=method.delivery_tag)
         except Exception as exc:
-            mark_failed(id, str(exc))
+            try:
+                mark_failed(id, str(exc))
+            except Exception as mark_exc:
+                print(f" [!] Failed to mark FAILED for {id}: {mark_exc}")
             print(f" [!] Generation failed for {id}: {exc}")
             ch.basic_ack(delivery_tag=method.delivery_tag)
 

@@ -2,9 +2,9 @@ spring:
   application:
     name: content-droid
   datasource:
-    url: jdbc:postgresql://localhost:5432/content-droid
-    username: postgres
-    password: postgres
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:content-droid}
+    username: ${POSTGRES_USER:postgres}
+    password: ${POSTGRES_PASSWORD:postgres}
   jpa:
     hibernate:
       ddl-auto: update
@@ -14,5 +14,5 @@ spring:
 
 app:
   rabbitmq:
-    host: localhost
-    queue-name: videos
+    host: ${RABBITMQ_HOST:localhost}
+    queue-name: ${RABBITMQ_QUEUE_NAME:videos}
