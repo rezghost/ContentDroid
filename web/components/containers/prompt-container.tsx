@@ -3,14 +3,16 @@
 import { Trash } from "lucide-react";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { GenerationService } from "@/lib/services/generation-service";
 import { redirect } from "next/dist/client/components/navigation";
+import { Spinner } from "../ui/spinner";
 
 export default function PromptContainer() {
   const MAX_CHARACTERS = 250;
   const [textAreaContent, setTextAreaContent] = useState("");
   const [characterCount, setCharacterCount] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const generationService = new GenerationService();
 
   const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -25,14 +27,21 @@ export default function PromptContainer() {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    setIsSubmitting(true);
     const formData = new FormData(event.target as HTMLFormElement);
 
     const formValues = {
       prompt: formData.get("prompt") as string,
     };
 
-    const data = await generationService.generateVideoAsync(formValues.prompt);
-    redirect(`/downloads/${data}`);
+    try {
+      const data = await generationService.generateVideoAsync(
+        formValues.prompt,
+      );
+      redirect(`/downloads/${data}`);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const reachedCharacterLimit = characterCount >= MAX_CHARACTERS;
@@ -65,13 +74,29 @@ export default function PromptContainer() {
           <Trash />
           Cancel
         </Button>
-        <Button
-          type="submit"
-          disabled={reachedCharacterLimit}
-          className="ml-2 cursor-pointer"
+        <Suspense
+          fallback={
+            <Button type="submit" disabled className="ml-2 cursor-pointer">
+              <Spinner className="size-4" />
+              Submitting...
+            </Button>
+          }
         >
-          Submit
-        </Button>
+          <Button
+            type="submit"
+            disabled={reachedCharacterLimit || isSubmitting}
+            className="ml-2 cursor-pointer"
+          >
+            {isSubmitting ? (
+              <>
+                <Spinner className="size-4" />
+                Submitting...
+              </>
+            ) : (
+              "Submit"
+            )}
+          </Button>
+        </Suspense>
       </div>
     </form>
   );

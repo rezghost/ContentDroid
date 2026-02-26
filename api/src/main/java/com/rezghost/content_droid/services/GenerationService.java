@@ -28,21 +28,38 @@ public class GenerationService implements IGenerationService {
     private final VideosRepository videosRepository;
     private final String queueName;
     private final String rabbitHost;
+    private final int rabbitPort;
+    private final String rabbitUser;
+    private final String rabbitPassword;
+    private final String rabbitVhost;
     private final Gson gson = new Gson();
 
     public GenerationService(
             VideosRepository videosRepository,
             @Value("${app.rabbitmq.queue-name:videos}") String queueName,
-            @Value("${app.rabbitmq.host:localhost}") String rabbitHost) {
+            @Value("${app.rabbitmq.host:localhost}") String rabbitHost,
+            @Value("${app.rabbitmq.port:5672}") int rabbitPort,
+            @Value("${app.rabbitmq.username:guest}") String rabbitUser,
+            @Value("${app.rabbitmq.password:guest}") String rabbitPassword,
+            @Value("${app.rabbitmq.vhost:/}") String rabbitVhost) {
         this.videosRepository = videosRepository;
         this.queueName = queueName;
         this.rabbitHost = rabbitHost;
+        this.rabbitPort = rabbitPort;
+        this.rabbitUser = rabbitUser;
+        this.rabbitPassword = rabbitPassword;
+        this.rabbitVhost = rabbitVhost;
     }
 
     @PostConstruct
     public void init() throws Exception {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost(rabbitHost);
+        factory.setPort(rabbitPort);
+        factory.setUsername(rabbitUser);
+        factory.setPassword(rabbitPassword);
+        factory.setVirtualHost(rabbitVhost);
+        factory.setAutomaticRecoveryEnabled(true);
 
         this.connection = factory.newConnection();
         this.channel = connection.createChannel();

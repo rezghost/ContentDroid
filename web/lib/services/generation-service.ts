@@ -1,11 +1,6 @@
-import applicationConfig from "../configurations/app-config";
-import ApplicationConfig from "../types/application-config";
-    
 export class GenerationService {
-    private config : ApplicationConfig = applicationConfig;
-
     async generateVideoAsync(prompt: string): Promise<string> {
-        const response = await fetch(`${this.config.generationServiceUrl}/generate`, {
+        const response = await fetch(`/api/generate`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -22,7 +17,7 @@ export class GenerationService {
     }
 
     async getDownloadStatusAsync(id: string): Promise<string> {
-        const response = await fetch(`${this.config.generationServiceUrl}/status/${encodeURIComponent(id)}`, {});
+        const response = await fetch(`/api/status/${encodeURIComponent(id)}`, {});
 
         if (!response.ok) {
             throw new Error(`Status fetch failed: ${response.statusText}`);
@@ -33,7 +28,7 @@ export class GenerationService {
     }
 
     async getVideoUriAsync(id: string): Promise<string> {
-        const response = await fetch(`${this.config.generationServiceUrl}/video/${encodeURIComponent(id)}`, {});
+        const response = await fetch(`/api/video/${encodeURIComponent(id)}`, {});
 
         if (!response.ok) {
             throw new Error(`Video URI fetch failed: ${response.statusText}`);

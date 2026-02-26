@@ -2,9 +2,15 @@ spring:
   application:
     name: content-droid
   datasource:
-    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:content-droid}
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql:///${POSTGRES_DB:content-droid}
     username: ${POSTGRES_USER:postgres}
     password: ${POSTGRES_PASSWORD:postgres}
+    hikari:
+      datasource-properties:
+        socketFactory: com.google.cloud.sql.postgres.SocketFactory
+        cloudSqlInstance: ${CLOUD_SQL_CONNECTION_NAME}
+        ipTypes: PUBLIC
   jpa:
     hibernate:
       ddl-auto: update
@@ -15,4 +21,8 @@ spring:
 app:
   rabbitmq:
     host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USER:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+    vhost: ${RABBITMQ_VHOST:/}
     queue-name: ${RABBITMQ_QUEUE_NAME:videos}

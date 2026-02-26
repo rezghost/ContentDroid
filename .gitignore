@@ -4,3 +4,6 @@
 *.mp3
 *.mp4
 /secrets
+deploy.sh
+build.sh
+.env.gcp.example
