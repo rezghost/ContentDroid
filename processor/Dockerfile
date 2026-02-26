@@ -13,4 +13,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-CMD ["python3", "main.py"]
+CMD ["sh", "-c", "python3 -m http.server ${PORT:-8080} >/dev/null 2>&1 & exec python3 main.py"]
