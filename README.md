@@ -30,9 +30,7 @@ The request flow is:
 ├── db/                 Database bootstrap SQL for local development
 ├── processor/          Python background worker
 ├── web/                Next.js frontend
-├── docker-compose.yml  Local multi-service stack
-├── build.sh            Image build helper for GCP
-└── deploy.sh           Cloud Run deployment helper
+└── docker-compose.yml  Local multi-service stack
 ```
 
 ## Components
