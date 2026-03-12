@@ -55,12 +55,6 @@ Key details:
 - UI stack: React 19, Tailwind CSS, shadcn-style components
 - browser requests use same-origin `/api/*` routes so the frontend does not need to call the backend directly from the browser
 
-Relevant files:
-
-- [app-config.ts](/Users/alex/Dev/ContentDroid/web/lib/configurations/app-config.ts)
-- [generation-service.ts](/Users/alex/Dev/ContentDroid/web/lib/services/generation-service.ts)
-- `web/app/api/`
-
 ### API
 
 Location: `api/`
@@ -87,12 +81,6 @@ Important behavior:
 - the API should stay lightweight
 - it should not generate videos directly
 - its job is to validate, persist state, enqueue work, and report current status
-
-Relevant files:
-
-- [build.gradle](/Users/alex/Dev/ContentDroid/api/build.gradle)
-- [application.yaml](/Users/alex/Dev/ContentDroid/api/src/main/resources/application.yaml)
-- [GenerationService.java](/Users/alex/Dev/ContentDroid/api/src/main/java/com/rezghost/content_droid/services/GenerationService.java)
 
 ### RabbitMQ
 
@@ -152,12 +140,6 @@ Important behavior:
 - this is the component that does the actual heavy work
 - it is sensitive to CPU, memory, Cloud SQL config, RabbitMQ credentials, and storage permissions
 - detailed logs here are the main source of truth when generation appears stalled
-
-Relevant files:
-
-- [main.py](/Users/alex/Dev/ContentDroid/processor/main.py)
-- [Dockerfile](/Users/alex/Dev/ContentDroid/processor/Dockerfile)
-- [requirements.txt](/Users/alex/Dev/ContentDroid/processor/requirements.txt)
 
 ### PostgreSQL
 
