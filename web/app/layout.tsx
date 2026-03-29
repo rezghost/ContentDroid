@@ -16,6 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html>
+      <title>Content Droid</title>
       <body>
         <SidebarProvider
           style={
