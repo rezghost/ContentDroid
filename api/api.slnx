@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ContentDroid.Api/ContentDroid.Api.csproj" />
+    <Project Path="src/ContentDroid.Data/ContentDroid.Data.csproj" />
+    <Project Path="src/ContentDroid.Models/ContentDroid.Models.csproj" />
+  </Folder>
+</Solution>

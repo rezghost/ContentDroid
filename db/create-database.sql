@@ -17,7 +17,7 @@ $$;
 CREATE TABLE IF NOT EXISTS videos (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
-  storage_key TEXT,
+  storage_uri TEXT,
   file_name TEXT,
   file_size_bytes BIGINT CHECK (file_size_bytes >= 0),
   mime_type TEXT DEFAULT 'video/mp4',
